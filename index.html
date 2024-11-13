@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Startup Landing Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a0a1f;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .neural-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+        }
+
+        .content {
+            text-align: center;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #00ff88, #00a1ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #b8b8b8;
+        }
+
+        .cta-button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #00ff88, #00a1ff);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(0,255,136,0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(0,161,255,0.5));
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <canvas class="neural-bg" id="neuralCanvas"></canvas>
+        <div class="content">
+            <h1>Future of AI Innovation</h1>
+            <p>Transform your business with cutting-edge artificial intelligence solutions that adapt and evolve with your needs. Experience the power of next-generation AI technology.</p>
+            <button class="cta-button">Get Started</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Node {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+        }
+
+        const nodes = Array.from({ length: 50 }, () => new Node());
+
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 10, 31, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            nodes.forEach(node => {
+                node.update();
+            });
+
+            nodes.forEach((node, i) => {
+                nodes.slice(i + 1).forEach(other => {
+                    const dx = other.x - node.x;
+                    const dy = other.y - node.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(node.x, node.y);
+                        ctx.lineTo(other.x, other.y);
+                        ctx.strokeStyle = `rgba(0, 161, 255, ${1 - distance / 150})`;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
